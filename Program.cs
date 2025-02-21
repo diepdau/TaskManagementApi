@@ -1,6 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using TaskManagementApi;
 using TaskManagementApi.Middlewares;
-using TaskManagementApi.Services;
+using TaskManagementApi.Models;
+using TaskManagementApi.Repositories;
+using TaskManagementApi.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +14,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //task
+//builder.Services.AddDbContext<TaskDB>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("cnn")));
 
-builder.Services.AddScoped<ITaskService, TaskService>();
+IConfigurationRoot cf = new ConfigurationBuilder().SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+builder.Services.AddDbContext<TaskManagementDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("cnn")));
+
+//builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<TaskRepository>();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<TaskCommentRepository>();
+builder.Services.AddScoped<TaskLabelRepository>();
+builder.Services.AddScoped<LabelRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
