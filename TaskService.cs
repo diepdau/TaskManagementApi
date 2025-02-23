@@ -16,7 +16,7 @@ namespace TaskManagementApi
 
         public List<Models.Task> GetAllTasks() => _tasks;
 
-        public Models.Task GetTaskById(int id) => _tasks.FirstOrDefault(t => t.Id == id);
+        public Models.Task? GetTaskById(int id) => _tasks.FirstOrDefault(t => t.Id == id);
 
         public void AddTask(Models.Task task)
         {

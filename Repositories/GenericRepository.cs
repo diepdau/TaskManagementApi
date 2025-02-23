@@ -2,7 +2,7 @@
 using TaskManagementApi.Models;
 using TaskManagementApi.Interfaces;
 
-namespace TaskManagementApi
+namespace TaskManagementApi.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
@@ -17,7 +17,7 @@ namespace TaskManagementApi
 
         public IEnumerable<T> GetAll() => _dbSet.ToList();
 
-        public T GetById(int id) => _dbSet.Find(id);
+        public T? GetById(int id) => _dbSet.Find(id);
 
         public void Add(T entity)
         {

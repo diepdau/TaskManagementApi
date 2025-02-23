@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TaskManagementApi.Models;
+﻿using TaskManagementApi.Models;
 
 namespace TaskManagementApi.Repositories
 {
@@ -9,8 +8,5 @@ namespace TaskManagementApi.Repositories
         {
 
         }
-
     }
-
-
 }

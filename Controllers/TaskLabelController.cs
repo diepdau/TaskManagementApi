@@ -5,77 +5,63 @@ using TaskManagementApi.Repositories;
 
 namespace TaskManagementApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/task-labels")]
     [ApiController]
     public class TaskLabelController : ControllerBase
     {
         private readonly TaskLabelRepository _taskLabelRepository;
+        private readonly TaskRepository _taskRepository;
+        private readonly LabelRepository _labelRepository; 
 
-        public TaskLabelController(TaskLabelRepository taskLabelRepository)
+        public TaskLabelController(TaskLabelRepository taskLabelRepository, TaskRepository taskRepository, LabelRepository labelRepository)
         {
             _taskLabelRepository = taskLabelRepository;
+            _taskRepository = taskRepository;
+            _labelRepository = labelRepository;
         }
+
         [HttpGet]
-        //public IActionResult GetAllTasks() => Ok(_taskLabelRepository.GetAll());
-
-
-        //[HttpPost]
-        //public IActionResult AssignLabel([FromBody] TaskLabel taskLabel)
-        //{
-        //    _taskLabelRepository.Add(taskLabel);
-        //    return CreatedAtAction(nameof(AssignLabel), taskLabel);
-        //}
-
-        
-        [HttpPost]
-        public IActionResult AddTaskLabel(int taskId, int labelId)
+        public IActionResult GetAllTaskLabels()
         {
-            TaskLabel newTaskLabel = new TaskLabel
+            var taskLabels = _taskLabelRepository.GetAll();
+            return Ok(taskLabels);
+        }
+
+
+        [HttpPost]
+        public IActionResult AddTaskLabel([FromQuery] int taskId, [FromQuery] int labelId)
+        {
+            if (taskId <= 0 || labelId <= 0)
+                return BadRequest("TaskId hoặc LabelId không hợp lệ.");
+
+            var taskExists = _taskRepository.GetById(taskId) != null;
+            if (!taskExists)
+                return NotFound($"Task với Id {taskId} không tồn tại.");
+
+            var labelExists = _labelRepository.GetById(labelId) != null;
+            if (!labelExists)
+                return NotFound($"Label với Id {labelId} không tồn tại.");
+
+            if (_taskLabelRepository.Exists(taskId, labelId))
+                return Conflict("TaskLabel đã tồn tại.");
+
+            var newTaskLabel = new TaskLabel
             {
                 TaskId = taskId,
                 LabelId = labelId
-
             };
+
             _taskLabelRepository.Add(newTaskLabel);
-            return CreatedAtAction(nameof(AddTaskLabel), newTaskLabel);
+            return CreatedAtAction(nameof(AddTaskLabel), new { taskId, labelId }, newTaskLabel);
         }
-        //[HttpDelete("{taskId}/{labelId}")]
-        //public IActionResult RemoveLabel(int taskId, int labelId)
-        //{
-        //    var taskLabels = _taskLabelRepository.GetAll()
-        //                        .Where(tl => tl.TaskId == taskId && tl.LabelId == labelId)
-        //                        .ToList();
 
-        //    if (!taskLabels.Any())
-        //        return NotFound("Label không tồn tại trong Task.");
 
-        //    foreach (var tl in taskLabels)
-        //    {
-        //        if (tl.LabelId.HasValue)
-        //            _taskLabelRepository.Delete(tl.LabelId.Value);
-        //    }
-
-        //    return NoContent();
-        //}
-        //////////////
-        //[HttpDelete("{taskId}/{labelId}")]
-        //public IActionResult RemoveLabel(int taskId, int labelId)
-        //{
-        //    var taskLabels = _taskLabelRepository.GetAll()
-        //                        .Where(tl => tl.TaskId == taskId && tl.LabelId == labelId)
-        //                        .ToList();
-
-        //    if (!taskLabels.Any())
-        //        return NotFound("Label không tồn tại trong Task.");
-
-        //    foreach (var tl in taskLabels)
-        //    {
-        //        if (tl.LabelId.HasValue)
-        //            _taskLabelRepository.Delete(tl.LabelId.Value);
-        //    }
-
-        //    return NoContent();
-        //}
+        [HttpDelete("{taskId}/{labelId}")]
+        public IActionResult RemoveLabel(int taskId, int labelId)
+        {
+            _taskLabelRepository.RemoveLabel(taskId, labelId);
+            return NoContent();
+        }
 
     }
 }

@@ -5,7 +5,7 @@ using TaskManagementApi.Repositories;
 
 namespace TaskManagementApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/task-comments")]
     [ApiController]
     public class TaskCommentController : ControllerBase
     {
@@ -17,14 +17,14 @@ namespace TaskManagementApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddComment(int taskId,int userId, string content, DateTime createAt)
+        public IActionResult AddComment(int taskId,int userId, string content, DateTime? createAt = null)
         {
             TaskComment newTaskComment = new TaskComment
             {
                 TaskId = taskId,
                 UserId = userId,
                 Content = content,
-                CreatedAt = createAt,
+                CreatedAt = createAt ?? DateTime.UtcNow,
             };
             _taskCommentRepository.Add(newTaskComment);
             return CreatedAtAction(nameof(AddComment), newTaskComment);

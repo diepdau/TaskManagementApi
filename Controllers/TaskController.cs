@@ -5,7 +5,7 @@ using TaskManagementApi.Repositories;
 
 namespace TaskManagementApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tasks")]
     [ApiController]
     public class TaskController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace TaskManagementApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddTask(string title, string description, bool isCompleted, int userId, int categoryId, DateTime createAt)
+        public IActionResult AddTask(string title, string description, bool isCompleted, int userId, int categoryId, DateTime? createAt = null)
         {
             Models.Task newTask = new Models.Task
             {
@@ -36,17 +36,17 @@ namespace TaskManagementApi.Controllers
                 IsCompleted = isCompleted,
                 UserId = userId,
                 CategoryId = categoryId,
-                CreatedAt = createAt,
+                CreatedAt = createAt ?? DateTime.UtcNow,
             };
             _taskRepository.Add(newTask);
             return CreatedAtAction(nameof(GetTaskById), new { id = newTask.Id }, newTask);
         }
 
 
-        [HttpPut("{taskId}")]
-        public IActionResult UpdateTask(int taskId, string title, string description, bool isCompleted, int userId, int categoryId, DateTime createAt)
+        [HttpPut("{id}")]
+        public IActionResult UpdateTask(int id, string title, string description, bool isCompleted, int userId, int categoryId, DateTime? createAt = null)
         {
-            var existingTask = _taskRepository.GetById(taskId);
+            var existingTask = _taskRepository.GetById(id);
             if (existingTask == null)
             {
                 return NotFound(new { message = "Task not found" });
@@ -57,7 +57,7 @@ namespace TaskManagementApi.Controllers
             existingTask.IsCompleted = isCompleted;
             existingTask.UserId = userId;
             existingTask.CategoryId = categoryId;
-            existingTask.CreatedAt = createAt;
+            existingTask.CreatedAt = createAt ?? DateTime.UtcNow;
 
             _taskRepository.Update(existingTask);
 

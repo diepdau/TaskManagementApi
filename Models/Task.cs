@@ -25,6 +25,7 @@ public partial class Task
     public virtual ICollection<TaskComment> TaskComments { get; set; } = new List<TaskComment>();
 
     public virtual User User { get; set; } = null!;
+    public virtual ICollection<TaskLabel> TaskLabels { get; set; } = new List<TaskLabel>();
 
-    public virtual ICollection<Label> Labels { get; set; } = new List<Label>();
+    //public virtual ICollection<Label> Labels { get; set; } = new List<Label>();
 }

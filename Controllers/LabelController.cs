@@ -5,7 +5,7 @@ using TaskManagementApi.Repositories;
 
 namespace TaskManagementApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/labels")]
     [ApiController]
     public class LabelController : ControllerBase
     {

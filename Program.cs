@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using TaskManagementApi;
+using System.Text;
 using TaskManagementApi.Middlewares;
 using TaskManagementApi.Models;
 using TaskManagementApi.Repositories;
-using TaskManagementApi.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,13 +15,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //task
-//builder.Services.AddDbContext<TaskDB>(options =>
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("cnn")));
-
-IConfigurationRoot cf = new ConfigurationBuilder().SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 builder.Services.AddDbContext<TaskManagementDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("cnn")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("cnn")));
+
 
 //builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<TaskRepository>();
@@ -29,6 +26,22 @@ builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<TaskCommentRepository>();
 builder.Services.AddScoped<TaskLabelRepository>();
 builder.Services.AddScoped<LabelRepository>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

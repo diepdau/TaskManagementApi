@@ -1,4 +1,5 @@
-﻿using TaskManagementApi.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using TaskManagementApi.Models;
 
 namespace TaskManagementApi.Repositories
 {
@@ -7,6 +8,8 @@ namespace TaskManagementApi.Repositories
         public LabelRepository(TaskManagementDbContext context) : base(context)
         {
         }
+       
+
 
     }
 }

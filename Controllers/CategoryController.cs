@@ -6,7 +6,7 @@ using TaskManagementApi.Repositories;
 
 namespace TaskManagementApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -18,25 +18,22 @@ namespace TaskManagementApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllCategories() => Ok(_categoryRepository.GetAll());
-        
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        //public IActionResult GetAllCategories() => Ok(_categoryRepository.GetAll());
+        public IActionResult GetAllCategories()
         {
-            var task = _categoryRepository.GetById(id);
-            if (task == null)
-            {
-                return NotFound(new { message = "Task not found" });
-            }
-            return Ok(task);
+            var categories = _categoryRepository.GetAllWithTasks();
+            return Ok(categories);
         }
-
         [HttpPost]
         public IActionResult AddCategory(string name, string description)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return BadRequest("Category name is required");
-
+            var existingCategory = _categoryRepository.GetByName(name);
+            if (existingCategory != null)
+            {
+                return Conflict("Category name must be unique.");
+            }
             var category = new Category
             {
                 Name = name,

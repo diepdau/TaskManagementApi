@@ -25,13 +25,27 @@ public partial class TaskManagementDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<TaskLabel> TaskLabels { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=localhost;Database=TaskManagementDB;Trusted_Connection=True;TrustServerCertificate=True;");
+
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//        => optionsBuilder.UseSqlServer("Data Source=localhost;Database=TaskManagementDB;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<TaskLabel>()
+           .HasKey(tl => new { tl.TaskId, tl.LabelId });
+
+        modelBuilder.Entity<TaskLabel>()
+            .HasOne(tl => tl.Task)
+            .WithMany(t => t.TaskLabels)
+            .HasForeignKey(tl => tl.TaskId);
+
+        modelBuilder.Entity<TaskLabel>()
+            .HasOne(tl => tl.Label)
+            .WithMany(l => l.TaskLabels)
+            .HasForeignKey(tl => tl.LabelId);
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC0712CDCA2B");
@@ -77,20 +91,20 @@ public partial class TaskManagementDbContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK__Tasks__UserId__403A8C7D");
 
-            entity.HasMany(d => d.Labels).WithMany(p => p.Tasks)
-                .UsingEntity<Dictionary<string, object>>(
-                    "TaskLabel",
-                    r => r.HasOne<Label>().WithMany()
-                        .HasForeignKey("LabelId")
-                        .HasConstraintName("FK__TaskLabel__Label__4CA06362"),
-                    l => l.HasOne<Task>().WithMany()
-                        .HasForeignKey("TaskId")
-                        .HasConstraintName("FK__TaskLabel__TaskI__4BAC3F29"),
-                    j =>
-                    {
-                        j.HasKey("TaskId", "LabelId").HasName("PK__TaskLabe__5FFEAB0DFF4473D7");
-                        j.ToTable("TaskLabels");
-                    });
+            //entity.HasMany(d => d.Labels).WithMany(p => p.Tasks)
+            //    .UsingEntity<Dictionary<string, object>>(
+            //        "TaskLabel",
+            //        r => r.HasOne<Label>().WithMany()
+            //            .HasForeignKey("LabelId")
+            //            .HasConstraintName("FK__TaskLabel__Label__4CA06362"),
+            //        l => l.HasOne<Task>().WithMany()
+            //            .HasForeignKey("TaskId")
+            //            .HasConstraintName("FK__TaskLabel__TaskI__4BAC3F29"),
+            //        j =>
+            //        {
+            //            j.HasKey("TaskId", "LabelId").HasName("PK__TaskLabe__5FFEAB0DFF4473D7");
+            //            j.ToTable("TaskLabels");
+            //        });
         });
 
         modelBuilder.Entity<TaskComment>(entity =>
