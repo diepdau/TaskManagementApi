@@ -22,16 +22,16 @@ namespace TaskManagementApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public IActionResult AddLabel(string name)
+        public IActionResult AddLabel([FromBody] Label label)
         {
-            Label newLabel = new Label
-            {
-                Name = name,
-            };
-            _labelRepository.Add(newLabel);
-            return CreatedAtAction(nameof(AddLabel), newLabel);
+            if (label == null || string.IsNullOrWhiteSpace(label.Name))
+                return BadRequest("Label name is required.");
+            if (_labelRepository.GetByName(label.Name) != null)
+                return Conflict("label name must be unique.");
+            _labelRepository.Add(label);
+            return CreatedAtAction(nameof(AddLabel), new { id = label.Id }, label);
         }
 
-        
+
     }
 }

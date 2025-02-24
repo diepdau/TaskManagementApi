@@ -9,9 +9,9 @@ namespace TaskManagementApi.Models;
 
 public partial class TaskLabel
 {
-    public int? TaskId { get; set; }
+    public int TaskId { get; set; }
 
-    public int? LabelId { get; set; }
+    public int LabelId { get; set; }
 
     [ForeignKey("LabelId")]
     public virtual Label? Label { get; set; }

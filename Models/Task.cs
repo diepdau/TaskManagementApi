@@ -16,7 +16,7 @@ public partial class Task
 
     public int UserId { get; set; }
 
-    public int? CategoryId { get; set; }
+    public int CategoryId { get; set; }
 
     public DateTime? CreatedAt { get; set; }
     [JsonIgnore]

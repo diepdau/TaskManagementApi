@@ -22,28 +22,32 @@ namespace TaskManagementApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddComment(int taskId,int userId, string content, DateTime? createAt = null)
+        public IActionResult AddComment([FromBody] TaskComment comment)
         {
-            var taskExists = _taskRepository.GetById(taskId) != null;
-            if (!taskExists)
-                return NotFound($"Task with Id {taskId} does not exist.");
+            if (comment == null || string.IsNullOrWhiteSpace(comment.Content))
+                return BadRequest("Comment content is required.");
 
-            var userExists = _userRepository.GetById(userId) != null;
-            if (!userExists)
-                return NotFound($"User with Id {userId} does not exist.");
-            TaskComment newTaskComment = new TaskComment
-            {
-                TaskId = taskId,
-                UserId = userId,
-                Content = content,
-                CreatedAt = createAt ?? DateTime.UtcNow,
-            };
-            _taskCommentRepository.Add(newTaskComment);
-            return CreatedAtAction(nameof(AddComment), newTaskComment);
+            if (_taskRepository.GetById(comment.TaskId) == null)
+                return NotFound($"Task with Id {comment.TaskId} does not exist.");
+
+            if (_userRepository.GetById(comment.UserId) == null)
+                return NotFound($"User with Id {comment.UserId} does not exist.");
+
+            comment.CreatedAt = comment.CreatedAt ?? DateTime.UtcNow;
+
+            _taskCommentRepository.Add(comment);
+            return CreatedAtAction(nameof(AddComment), new { id = comment.Id }, comment);
         }
+
         [HttpDelete("{id}")]
         public IActionResult DeleteComment(int id)
         {
+            var comment = _taskCommentRepository.GetById(id);
+            if (comment == null)
+            {
+                return NotFound(new { message = $"Comment with Id {id} does not exist." });
+            }
+
             _taskCommentRepository.Delete(id);
             return NoContent();
         }

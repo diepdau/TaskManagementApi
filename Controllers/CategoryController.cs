@@ -28,24 +28,19 @@ namespace TaskManagementApi.Controllers
         //}
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public IActionResult AddCategory(string name, string description)
+        public IActionResult AddCategory([FromBody] Category category)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                return BadRequest("Category name is required");
-            var existingCategory = _categoryRepository.GetByName(name);
-            if (existingCategory != null)
-            {
+            if (category == null || string.IsNullOrWhiteSpace(category.Name) || string.IsNullOrWhiteSpace(category.Description))
+                return BadRequest("Category name and description are required.");
+
+            if (_categoryRepository.GetByName(category.Name) != null)
                 return Conflict("Category name must be unique.");
-            }
-            var category = new Category
-            {
-                Name = name,
-                Description = description
-            };
 
             _categoryRepository.Add(category);
-            return CreatedAtAction(nameof(GetAllCategories), category);
+            return CreatedAtAction(nameof(GetAllCategories), new { id = category.Id }, category);
         }
+
+
 
 
     }

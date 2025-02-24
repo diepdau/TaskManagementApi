@@ -23,70 +23,79 @@ namespace TaskManagementApi.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register(string username, string email, string password)
+        public IActionResult Register(User user)
         {
-            if (!IsValidEmail(email))
+            if (user == null)
+                return BadRequest("User information is required.");
+
+            if (string.IsNullOrWhiteSpace(user.Username) ||
+                string.IsNullOrWhiteSpace(user.Email) ||
+                string.IsNullOrWhiteSpace(user.PasswordHash))
+            {
+                return BadRequest("Username, Email, and Password are required.");
+            }
+
+            if (!IsValidEmail(user.Email))
                 return BadRequest("Invalid email format.");
 
-            if (string.IsNullOrWhiteSpace(password))
-                return BadRequest("Password is required.");
-
-            if (_userRepository.GetByUsername(username) != null)
+            if (_userRepository.GetByUsername(user.Username) != null)
                 return Conflict("Username is already taken.");
-            if (_userRepository.GetByEmail(email) != null)
+
+            if (_userRepository.GetByEmail(user.Email) != null)
                 return Conflict("Email is already in use.");
 
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
 
-            var newUser = new User
-            {
-                Username = username,
-                Email = email,
-                PasswordHash = hashedPassword,
-            };
+            _userRepository.Add(user);
 
-            _userRepository.Add(newUser);
-            return CreatedAtAction(nameof(GetAllUsers), new { id = newUser.Id }, newUser);
+            return CreatedAtAction(nameof(GetAllUsers), new { id = user.Id }, user);
         }
+
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login([FromBody] User user)
         {
-
-            var user = _userRepository.GetByEmail(email);
-            if (user == null) return Unauthorized("Invalid email or password.");
-            if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) return Unauthorized("Invalid email or password.");
-
-            else
+            if (user == null || string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.PasswordHash))
             {
-                var claims = new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, user.Username),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, user.Roles),
-                 };
-
-                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-                var token = new JwtSecurityToken(
-                    _configuration["Jwt:Issuer"],
-                    _configuration["Jwt:Audience"],
-                    claims,
-                    expires: DateTime.UtcNow.AddHours(1),
-                    signingCredentials: credentials);
-
-
-                var Accesstoken = new JwtSecurityTokenHandler().WriteToken(token);
-                return Ok(new
-                {
-                    Username = user.Username,
-                    Email = user.Email,
-                    Token = Accesstoken
-                });
+                return BadRequest("Email/Username or Password cannot be blank.");
             }
+            var userLogin = _userRepository.GetByEmail(user.Email);
+            if (userLogin == null)
+            {
+                return Unauthorized("Email or password is incorrect.");
+            }
+            if (!BCrypt.Net.BCrypt.Verify(user.PasswordHash, userLogin.PasswordHash))
+            {
+                return Unauthorized("Email or password is incorrect.");
+            }
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, userLogin.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, userLogin.Username),
+                new Claim(ClaimTypes.Email, userLogin.Email),
+                new Claim(ClaimTypes.Role, userLogin.Role),
+            };
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddHours(1),
+                signingCredentials: credentials);
+
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return Ok(new
+            {
+                Username = userLogin.Username,
+                Email = userLogin.Email,
+                Token = accessToken
+            });
         }
+
 
         [HttpGet]
         [Authorize(Roles = "Admin")]

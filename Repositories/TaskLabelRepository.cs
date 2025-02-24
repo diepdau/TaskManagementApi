@@ -11,14 +11,16 @@ namespace TaskManagementApi.Repositories
         {
             return _dbSet.Any(tl => tl.TaskId == taskId && tl.LabelId == labelId);
         }
-        public void RemoveLabel(int taskId, int labelId)
+        public bool RemoveLabel(int taskId, int labelId)
         {
             var taskLabel = _dbSet.FirstOrDefault(tl => tl.TaskId == taskId && tl.LabelId == labelId);
-            if (taskLabel != null)
-            {
-                _dbSet.Remove(taskLabel);
-                _context.SaveChanges();
-            }
+
+            if (taskLabel == null) return false;
+
+            _dbSet.Remove(taskLabel);
+            _context.SaveChanges();
+            return true;
         }
+
     }
 }

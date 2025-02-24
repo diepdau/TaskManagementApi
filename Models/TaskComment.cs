@@ -13,7 +13,7 @@ public partial class TaskComment
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual Task Task { get; set; } = null!;
+    public virtual Task? Task { get; set; } = null!;
 
-    public virtual User User { get; set; } = null!;
+    public virtual User? User { get; set; } = null!;
 }

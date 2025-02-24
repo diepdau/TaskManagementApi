@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TaskManagementApi.Models;
 using TaskManagementApi.Repositories;
 
@@ -31,40 +32,36 @@ namespace TaskManagementApi.Controllers
 
 
         [HttpPost]
-
-        public IActionResult AddTaskLabel([FromQuery] int taskId, [FromQuery] int labelId)
+        public IActionResult AddTaskLabel([FromBody] TaskLabel taskLabel)
         {
-            if (taskId <= 0 || labelId <= 0)
+            if (taskLabel?.TaskId <= 0 || taskLabel.LabelId <= 0)
                 return BadRequest("Invalid TaskId or LabelId.");
 
-            var taskExists = _taskRepository.GetById(taskId) != null;
-            if (!taskExists)
-                return NotFound($"Task with Id {taskId} does not exist.");
+            if (_taskRepository.GetById(taskLabel.TaskId) == null)
+                return NotFound($"Task with Id {taskLabel.TaskId} does not exist.");
 
-            var labelExists = _labelRepository.GetById(labelId) != null;
-            if (!labelExists)
-                return NotFound($"Label with Id {labelId} does not exist.");
+            if (_labelRepository.GetById(taskLabel.LabelId) == null)
+                return NotFound($"Label with Id {taskLabel.LabelId} does not exist.");
 
-            if (_taskLabelRepository.Exists(taskId, labelId))
+            if (_taskLabelRepository.Exists(taskLabel.TaskId, taskLabel.LabelId))
                 return Conflict("TaskLabel already exists.");
 
-            var newTaskLabel = new TaskLabel
-            {
-                TaskId = taskId,
-                LabelId = labelId
-            };
-
-            _taskLabelRepository.Add(newTaskLabel);
-            return CreatedAtAction(nameof(AddTaskLabel), new { taskId, labelId }, newTaskLabel);
+            _taskLabelRepository.Add(taskLabel);
+            return CreatedAtAction(nameof(AddTaskLabel), new { taskLabel.TaskId, taskLabel.LabelId }, taskLabel);
         }
+
 
 
         [HttpDelete("{taskId}/{labelId}")]
         public IActionResult RemoveLabel(int taskId, int labelId)
         {
-            _taskLabelRepository.RemoveLabel(taskId, labelId);
+            if (!_taskLabelRepository.RemoveLabel(taskId, labelId))
+            {
+                return NotFound(new { message = $"Label with Id {labelId} is not associated with Task Id {taskId}." });
+            }
             return NoContent();
         }
+
 
     }
 }
