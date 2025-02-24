@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementApi.Models;
 using TaskManagementApi.Repositories;
@@ -7,6 +8,7 @@ namespace TaskManagementApi.Controllers
 {
     [Route("api/task-comments")]
     [ApiController]
+    [Authorize]
     public class TaskCommentController : ControllerBase
     {
         private readonly TaskCommentRepository _taskCommentRepository;

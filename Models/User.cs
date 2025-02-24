@@ -18,6 +18,7 @@ public partial class User
     public string Email { get; set; } = null!;
 
     public string PasswordHash { get; set; } = null!;
+    public string Roles { get; set; } = "User";
 
     public virtual ICollection<TaskComment> TaskComments { get; set; } = new List<TaskComment>();
 

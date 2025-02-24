@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementApi.Models;
 using TaskManagementApi.Repositories;
@@ -7,6 +8,7 @@ namespace TaskManagementApi.Controllers
 {
     [Route("api/task-labels")]
     [ApiController]
+    [Authorize]
     public class TaskLabelController : ControllerBase
     {
         private readonly TaskLabelRepository _taskLabelRepository;
@@ -29,6 +31,7 @@ namespace TaskManagementApi.Controllers
 
 
         [HttpPost]
+
         public IActionResult AddTaskLabel([FromQuery] int taskId, [FromQuery] int labelId)
         {
             if (taskId <= 0 || labelId <= 0)

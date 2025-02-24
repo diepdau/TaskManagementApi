@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementApi.Models;
 using TaskManagementApi.Repositories;
@@ -7,6 +8,8 @@ namespace TaskManagementApi.Controllers
 {
     [Route("api/tasks")]
     [ApiController]
+    [Authorize]
+
     public class TaskController : ControllerBase
     {
         private readonly TaskRepository _taskRepository;
@@ -30,6 +33,7 @@ namespace TaskManagementApi.Controllers
         }
 
         [HttpPost]
+
         public IActionResult AddTask(string title, string description, bool isCompleted, int userId, int categoryId, DateTime? createAt = null)
         {
             var userExist = _userRepository.GetById(userId) != null;

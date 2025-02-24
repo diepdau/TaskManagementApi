@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using TaskManagementApi.Models;
 using TaskManagementApi;
 using TaskManagementApi.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TaskManagementApi.Controllers
 {
     [Route("api/categories")]
     [ApiController]
+    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly CategoryRepository _categoryRepository;
@@ -25,6 +27,7 @@ namespace TaskManagementApi.Controllers
         //    return Ok(categories);
         //}
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult AddCategory(string name, string description)
         {
             if (string.IsNullOrWhiteSpace(name))

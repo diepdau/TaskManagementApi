@@ -5,10 +5,9 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using TaskManagementApi.Repositories;
-using BCrypt.Net;
 using TaskManagementApi.Models;
 using System.Text.RegularExpressions;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 namespace TaskManagementApi.Controllers
 {
     [Route("api/users")]
@@ -64,18 +63,19 @@ namespace TaskManagementApi.Controllers
                 var claims = new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim("Username", user.Username),
+                    new Claim(ClaimTypes.NameIdentifier, user.Username),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Roles),
                  };
 
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
                 var token = new JwtSecurityToken(
                     _configuration["Jwt:Issuer"],
                     _configuration["Jwt:Audience"],
                     claims,
                     expires: DateTime.UtcNow.AddHours(1),
-                    signingCredentials: signIn);
+                    signingCredentials: credentials);
 
 
                 var Accesstoken = new JwtSecurityTokenHandler().WriteToken(token);
@@ -89,6 +89,7 @@ namespace TaskManagementApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult GetAllUsers()
         {
             var users = _userRepository.GetAll();
