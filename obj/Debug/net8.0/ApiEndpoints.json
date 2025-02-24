@@ -2,7 +2,7 @@
   {
     "ContainingType": "TaskManagementApi.Controllers.CategoryController",
     "Method": "GetAllCategories",
-    "RelativePath": "api/Category",
+    "RelativePath": "api/categories",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -12,7 +12,7 @@
   {
     "ContainingType": "TaskManagementApi.Controllers.CategoryController",
     "Method": "AddCategory",
-    "RelativePath": "api/Category",
+    "RelativePath": "api/categories",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -31,25 +31,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "TaskManagementApi.Controllers.CategoryController",
-    "Method": "GetById",
-    "RelativePath": "api/Category/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "TaskManagementApi.Controllers.LabelController",
     "Method": "GetAllLabel",
-    "RelativePath": "api/Label",
+    "RelativePath": "api/labels",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -59,7 +43,7 @@
   {
     "ContainingType": "TaskManagementApi.Controllers.LabelController",
     "Method": "AddLabel",
-    "RelativePath": "api/Label",
+    "RelativePath": "api/labels",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -73,9 +57,93 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "TaskManagementApi.Controllers.TaskCommentController",
+    "Method": "AddComment",
+    "RelativePath": "api/task-comments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskComment",
+        "Type": "TaskManagementApi.Models.TaskComment",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TaskManagementApi.Controllers.TaskCommentController",
+    "Method": "DeleteComment",
+    "RelativePath": "api/task-comments/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TaskManagementApi.Controllers.TaskLabelController",
+    "Method": "GetAllTaskLabels",
+    "RelativePath": "api/task-labels",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TaskManagementApi.Controllers.TaskLabelController",
+    "Method": "AddTaskLabel",
+    "RelativePath": "api/task-labels",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "labelId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TaskManagementApi.Controllers.TaskLabelController",
+    "Method": "RemoveLabel",
+    "RelativePath": "api/task-labels/{taskId}/{labelId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "taskId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "labelId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "TaskManagementApi.Controllers.TaskController",
     "Method": "GetAllTasks",
-    "RelativePath": "api/Task",
+    "RelativePath": "api/tasks",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -85,7 +153,7 @@
   {
     "ContainingType": "TaskManagementApi.Controllers.TaskController",
     "Method": "AddTask",
-    "RelativePath": "api/Task",
+    "RelativePath": "api/tasks",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -117,7 +185,7 @@
       },
       {
         "Name": "createAt",
-        "Type": "System.DateTime",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       }
     ],
@@ -126,24 +194,8 @@
   {
     "ContainingType": "TaskManagementApi.Controllers.TaskController",
     "Method": "GetTaskById",
-    "RelativePath": "api/Task/{id}",
+    "RelativePath": "api/tasks/{id}",
     "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TaskManagementApi.Controllers.TaskController",
-    "Method": "DeleteTask",
-    "RelativePath": "api/Task/{id}",
-    "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -158,13 +210,13 @@
   {
     "ContainingType": "TaskManagementApi.Controllers.TaskController",
     "Method": "UpdateTask",
-    "RelativePath": "api/Task/{taskId}",
+    "RelativePath": "api/tasks/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "taskId",
+        "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
       },
@@ -195,47 +247,16 @@
       },
       {
         "Name": "createAt",
-        "Type": "System.DateTime",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "TaskManagementApi.Controllers.TaskCommentController",
-    "Method": "AddComment",
-    "RelativePath": "api/TaskComment",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "taskId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "content",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "createAt",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TaskManagementApi.Controllers.TaskCommentController",
-    "Method": "DeleteComment",
-    "RelativePath": "api/TaskComment/{id}",
+    "ContainingType": "TaskManagementApi.Controllers.TaskController",
+    "Method": "DeleteTask",
+    "RelativePath": "api/tasks/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -249,51 +270,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "TaskManagementApi.Controllers.TaskLabelController",
-    "Method": "AddTaskLabel",
-    "RelativePath": "api/TaskLabel",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "taskId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "labelId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TaskManagementApi.Controllers.TaskLabelController",
-    "Method": "AddTaskLabel",
-    "RelativePath": "api/TaskLabel",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "taskId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "labelId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
     "ContainingType": "TaskManagementApi.Controllers.UserController",
     "Method": "GetAllUsers",
-    "RelativePath": "api/User",
+    "RelativePath": "api/users",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -302,8 +281,29 @@
   },
   {
     "ContainingType": "TaskManagementApi.Controllers.UserController",
+    "Method": "Login",
+    "RelativePath": "api/users/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "password",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TaskManagementApi.Controllers.UserController",
     "Method": "Register",
-    "RelativePath": "api/User/register",
+    "RelativePath": "api/users/register",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -325,26 +325,5 @@
       }
     ],
     "ReturnTypes": []
-  },
-  {
-    "ContainingType": "TaskManagementApi.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "WeatherForecast",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[TaskManagementApi.WeatherForecast, TaskManagementApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "EndpointName": "GetWeatherForecast"
   }
 ]

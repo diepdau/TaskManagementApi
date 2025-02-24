@@ -10,10 +10,13 @@ namespace TaskManagementApi.Controllers
     public class TaskController : ControllerBase
     {
         private readonly TaskRepository _taskRepository;
-
-        public TaskController(TaskRepository taskService)
+        private readonly UserRepository _userRepository;
+        private readonly CategoryRepository _categoryRepository;
+        public TaskController(TaskRepository taskService, UserRepository userRepository, CategoryRepository categoryRepository)
         {
             _taskRepository = taskService;
+            _userRepository = userRepository;
+            _categoryRepository = categoryRepository;
         }
 
         [HttpGet]
@@ -29,6 +32,11 @@ namespace TaskManagementApi.Controllers
         [HttpPost]
         public IActionResult AddTask(string title, string description, bool isCompleted, int userId, int categoryId, DateTime? createAt = null)
         {
+            var userExist = _userRepository.GetById(userId) != null;
+            if (!userExist) return NotFound($"User with Id {userId} does not exist.");
+
+            var categoryExist = _categoryRepository.GetById(categoryId) != null;
+            if (!categoryExist) return NotFound($"Category with Id {categoryId} does not exist.");
             Models.Task newTask = new Models.Task
             {
                 Title = title,
@@ -46,12 +54,18 @@ namespace TaskManagementApi.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateTask(int id, string title, string description, bool isCompleted, int userId, int categoryId, DateTime? createAt = null)
         {
+            
+
             var existingTask = _taskRepository.GetById(id);
             if (existingTask == null)
             {
                 return NotFound(new { message = "Task not found" });
             }
+            var userExist = _userRepository.GetById(userId) != null;
+            if (!userExist) return NotFound($"User with Id {userId} does not exist");
 
+            var categoryExist = _categoryRepository.GetById(categoryId) != null;
+            if (!categoryExist) return NotFound($"Category with Id {categoryId} does not exist.");
             existingTask.Title = title;
             existingTask.Description = description;
             existingTask.IsCompleted = isCompleted;

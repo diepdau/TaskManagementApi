@@ -12,10 +12,10 @@ namespace TaskManagementApi.Repositories
         {
             return _dbSet.FirstOrDefault(c => c.Name == name);
         }
-        public IEnumerable<Category> GetAllWithTasks()
-        {
-            return _context.Categories.Include(c => c.Tasks).ToList();
-        }
+        //public IEnumerable<Category> GetAllWithTasks()
+        //{
+        //    return _context.Categories.Include(c => c.Tasks).ToList();
+        //}
 
 
     }

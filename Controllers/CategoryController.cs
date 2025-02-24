@@ -18,12 +18,12 @@ namespace TaskManagementApi.Controllers
         }
 
         [HttpGet]
-        //public IActionResult GetAllCategories() => Ok(_categoryRepository.GetAll());
-        public IActionResult GetAllCategories()
-        {
-            var categories = _categoryRepository.GetAllWithTasks();
-            return Ok(categories);
-        }
+        public IActionResult GetAllCategories() => Ok(_categoryRepository.GetAll());
+        //public IActionResult GetAllCategories()
+        //{
+        //    var categories = _categoryRepository.GetAllWithTasks();
+        //    return Ok(categories);
+        //}
         [HttpPost]
         public IActionResult AddCategory(string name, string description)
         {

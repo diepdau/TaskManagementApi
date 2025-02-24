@@ -10,15 +10,25 @@ namespace TaskManagementApi.Controllers
     public class TaskCommentController : ControllerBase
     {
         private readonly TaskCommentRepository _taskCommentRepository;
-
-        public TaskCommentController(TaskCommentRepository taskCommentRepository)
+        private readonly TaskRepository _taskRepository;
+        private readonly UserRepository _userRepository;
+        public TaskCommentController(TaskCommentRepository taskCommentRepository , UserRepository userRepository, TaskRepository taskRepository)
         {
             _taskCommentRepository = taskCommentRepository;
+            _taskRepository = taskRepository;
+            _userRepository = userRepository;
         }
 
         [HttpPost]
         public IActionResult AddComment(int taskId,int userId, string content, DateTime? createAt = null)
         {
+            var taskExists = _taskRepository.GetById(taskId) != null;
+            if (!taskExists)
+                return NotFound($"Task with Id {taskId} does not exist.");
+
+            var userExists = _userRepository.GetById(userId) != null;
+            if (!userExists)
+                return NotFound($"User with Id {userId} does not exist.");
             TaskComment newTaskComment = new TaskComment
             {
                 TaskId = taskId,

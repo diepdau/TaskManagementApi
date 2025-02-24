@@ -11,7 +11,6 @@ namespace TaskManagementApi.Repositories
         {
             return _dbSet.FirstOrDefault(u => u.Username == username);
         }
-
         public User? GetByEmail(string email)
         {
             return _dbSet.FirstOrDefault(u => u.Email == email);

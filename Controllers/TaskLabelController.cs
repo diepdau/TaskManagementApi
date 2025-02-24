@@ -32,18 +32,18 @@ namespace TaskManagementApi.Controllers
         public IActionResult AddTaskLabel([FromQuery] int taskId, [FromQuery] int labelId)
         {
             if (taskId <= 0 || labelId <= 0)
-                return BadRequest("TaskId hoặc LabelId không hợp lệ.");
+                return BadRequest("Invalid TaskId or LabelId.");
 
             var taskExists = _taskRepository.GetById(taskId) != null;
             if (!taskExists)
-                return NotFound($"Task với Id {taskId} không tồn tại.");
+                return NotFound($"Task with Id {taskId} does not exist.");
 
             var labelExists = _labelRepository.GetById(labelId) != null;
             if (!labelExists)
-                return NotFound($"Label với Id {labelId} không tồn tại.");
+                return NotFound($"Label with Id {labelId} does not exist.");
 
             if (_taskLabelRepository.Exists(taskId, labelId))
-                return Conflict("TaskLabel đã tồn tại.");
+                return Conflict("TaskLabel already exists.");
 
             var newTaskLabel = new TaskLabel
             {

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
 namespace TaskManagementApi.Models;
-
 public partial class TaskComment
 {
     public int Id { get; set; }

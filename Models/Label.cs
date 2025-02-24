@@ -9,7 +9,6 @@ public partial class Label
     public int Id { get; set; }
 
     public string Name { get; set; } = null!;
-    [JsonIgnore]
     public virtual ICollection<TaskLabel> TaskLabels { get; set; } = new List<TaskLabel>();
 
     //public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
