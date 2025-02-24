@@ -15,5 +15,6 @@ namespace TaskManagementApi.Repositories
         {
             return _dbSet.FirstOrDefault(u => u.Email == email);
         }
+        
     }
 }

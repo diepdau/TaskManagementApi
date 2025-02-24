@@ -8,6 +8,7 @@ using TaskManagementApi.Repositories;
 using BCrypt.Net;
 using TaskManagementApi.Models;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 namespace TaskManagementApi.Controllers
 {
     [Route("api/users")]
@@ -25,10 +26,6 @@ namespace TaskManagementApi.Controllers
         [HttpPost("register")]
         public IActionResult Register(string username, string email, string password)
         {
-            if (string.IsNullOrWhiteSpace(username))
-                return BadRequest("User name is required.");
-            if (string.IsNullOrWhiteSpace(email))
-                return BadRequest("Email is required.");
             if (!IsValidEmail(email))
                 return BadRequest("Invalid email format.");
 
@@ -53,23 +50,42 @@ namespace TaskManagementApi.Controllers
             return CreatedAtAction(nameof(GetAllUsers), new { id = newUser.Id }, newUser);
         }
 
-        [HttpPost("login")]
-        public IActionResult Login(string email, string password)
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login(string email, string password)
         {
+
             var user = _userRepository.GetByEmail(email);
-            if (user == null)
-                return Unauthorized("Invalid email or password.");
+            if (user == null) return Unauthorized("Invalid email or password.");
+            if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash)) return Unauthorized("Invalid email or password.");
 
-            if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
-                return Unauthorized("Invalid email or password.");
-
-            var token = GenerateJwtToken(user);
-            return Ok(new
+            else
             {
-                Username = user.Username,
-                Email = user.Email,
-                Token = token
-            });
+                var claims = new[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                    new Claim("Username", user.Username),
+                 };
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                    _configuration["Jwt:Issuer"],
+                    _configuration["Jwt:Audience"],
+                    claims,
+                    expires: DateTime.UtcNow.AddHours(1),
+                    signingCredentials: signIn);
+
+
+                var Accesstoken = new JwtSecurityTokenHandler().WriteToken(token);
+                return Ok(new
+                {
+                    Username = user.Username,
+                    Email = user.Email,
+                    Token = Accesstoken
+                });
+            }
         }
 
         [HttpGet]
@@ -78,42 +94,13 @@ namespace TaskManagementApi.Controllers
             var users = _userRepository.GetAll();
             return Ok(users);
         }
-
-        private string GenerateJwtToken(User user)
-        {
-            var key = _configuration["Jwt:Key"];
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new InvalidOperationException("JWT Key is missing in config.");
-            }
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("Username", user.Username),
-            };
-
-            var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
-                claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: credentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
         private bool IsValidEmail(string email)
         {
             string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
             return Regex.IsMatch(email, pattern);
         }
+
+       
 
     }
 }
