@@ -8,6 +8,7 @@ using TaskManagementApi.Repositories;
 using TaskManagementApi.Models;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 namespace TaskManagementApi.Controllers
 {
     [Route("api/users")]
@@ -56,9 +57,9 @@ namespace TaskManagementApi.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] User user)
         {
-            if (user == null || string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.PasswordHash))
+            if (user == null || string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.PasswordHash))
             {
-                return BadRequest("Email/Username or Password cannot be blank.");
+                return BadRequest("Email or Password cannot be blank.");
             }
             var userLogin = _userRepository.GetByEmail(user.Email);
             if (userLogin == null)
@@ -73,7 +74,6 @@ namespace TaskManagementApi.Controllers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userLogin.Id.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, userLogin.Username),
                 new Claim(ClaimTypes.Email, userLogin.Email),
                 new Claim(ClaimTypes.Role, userLogin.Role),
             };
@@ -92,6 +92,7 @@ namespace TaskManagementApi.Controllers
             {
                 Username = userLogin.Username,
                 Email = userLogin.Email,
+                Role=userLogin.Role,
                 Token = accessToken
             });
         }
@@ -109,8 +110,12 @@ namespace TaskManagementApi.Controllers
             string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
             return Regex.IsMatch(email, pattern);
         }
+        public class UserRequest
+        {
+            public string Email { get; set; }
+            public string PasswordHash { get; set; }
+        }
 
-       
 
     }
 }

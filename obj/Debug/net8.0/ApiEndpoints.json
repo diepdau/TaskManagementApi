@@ -18,14 +18,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "name",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "description",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "category",
+        "Type": "TaskManagementApi.Models.Category",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -49,9 +44,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "name",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "label",
+        "Type": "TaskManagementApi.Models.Label",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -65,24 +60,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "taskId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "content",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "createAt",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
+        "Name": "comment",
+        "Type": "TaskManagementApi.Models.TaskComment",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -122,14 +102,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "taskId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "labelId",
-        "Type": "System.Int32",
-        "IsRequired": false
+        "Name": "taskLabel",
+        "Type": "TaskManagementApi.Models.TaskLabel",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -174,34 +149,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "title",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "description",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "isCompleted",
-        "Type": "System.Boolean",
-        "IsRequired": false
-      },
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "categoryId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "createAt",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
+        "Name": "task",
+        "Type": "TaskManagementApi.Models.Task",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -236,34 +186,9 @@
         "IsRequired": true
       },
       {
-        "Name": "title",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "description",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "isCompleted",
-        "Type": "System.Boolean",
-        "IsRequired": false
-      },
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "categoryId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "createAt",
-        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-        "IsRequired": false
+        "Name": "task",
+        "Type": "TaskManagementApi.Models.Task",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -303,14 +228,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "email",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "password",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "user",
+        "Type": "TaskManagementApi.Models.User",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -324,19 +244,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "username",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "email",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "password",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "user",
+        "Type": "TaskManagementApi.Models.User",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

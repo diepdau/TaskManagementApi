@@ -12,20 +12,20 @@ public partial class Task
 
     public string? Description { get; set; }
 
-    public bool? IsCompleted { get; set; }
+    public bool? IsCompleted { get; set; } 
 
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
 
-    public int CategoryId { get; set; }
+    public int? CategoryId { get; set; }
 
     public DateTime? CreatedAt { get; set; }
     [JsonIgnore]
     public virtual Category? Category { get; set; }
 
-    public virtual ICollection<TaskComment> TaskComments { get; set; } = new List<TaskComment>();
+    public virtual ICollection<TaskComment>? TaskComments { get; set; } = new List<TaskComment>();
 
-    public virtual User User { get; set; } = null!;
-    public virtual ICollection<TaskLabel> TaskLabels { get; set; } = new List<TaskLabel>();
+    public virtual User? User { get; set; } = null!;
+    public virtual ICollection<TaskLabel>? TaskLabels { get; set; } = new List<TaskLabel>();
 
     //public virtual ICollection<Label> Labels { get; set; } = new List<Label>();
 }

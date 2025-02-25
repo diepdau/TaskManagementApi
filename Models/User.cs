@@ -9,13 +9,13 @@ namespace TaskManagementApi.Models;
 public partial class User
 {
     public int Id { get; set; }
-    public string Username { get; set; } = null!;
+    public string? Username { get; set; } = null!;
     [Required]
     [EmailAddress]
     public string Email { get; set; } = null!;
     [Required]
     public string PasswordHash { get; set; } = null!;
-    public string Role { get; set; } = "Admin";
+    public string Role { get; set; } = "User";
 
     public virtual ICollection<TaskComment> TaskComments { get; set; } = new List<TaskComment>();
 
