@@ -25,6 +25,7 @@ namespace TaskManagementApi.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetAllTasks() => Ok(_taskRepository.GetAll());
 
         [HttpGet("{id}")]

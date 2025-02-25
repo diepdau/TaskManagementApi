@@ -46,6 +46,7 @@ public partial class TaskManagementDbContext : DbContext
             .HasOne(tl => tl.Label)
             .WithMany(l => l.TaskLabels)
             .HasForeignKey(tl => tl.LabelId);
+
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC0712CDCA2B");

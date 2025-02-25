@@ -10,6 +10,7 @@ namespace TaskManagementApi.Controllers
     [Route("api/categories")]
     [ApiController]
     [Authorize]
+
     public class CategoryController : ControllerBase
     {
         private readonly CategoryRepository _categoryRepository;
@@ -21,11 +22,7 @@ namespace TaskManagementApi.Controllers
 
         [HttpGet]
         public IActionResult GetAllCategories() => Ok(_categoryRepository.GetAll());
-        //public IActionResult GetAllCategories()
-        //{
-        //    var categories = _categoryRepository.GetAllWithTasks();
-        //    return Ok(categories);
-        //}
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public IActionResult AddCategory([FromBody] Category category)

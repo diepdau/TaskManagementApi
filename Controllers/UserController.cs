@@ -33,7 +33,7 @@ namespace TaskManagementApi.Controllers
                 string.IsNullOrWhiteSpace(user.Email) ||
                 string.IsNullOrWhiteSpace(user.PasswordHash))
             {
-                return BadRequest("Username, Email, and Password are required.");
+                return BadRequest("Username, Email and Password are required.");
             }
 
             if (!IsValidEmail(user.Email))
@@ -72,8 +72,8 @@ namespace TaskManagementApi.Controllers
             }
 
             var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, userLogin.Id.ToString()),
+            {   new Claim(ClaimTypes.NameIdentifier, userLogin.Id.ToString()),
+                new Claim(ClaimTypes.Name, userLogin.Username),
                 new Claim(ClaimTypes.Email, userLogin.Email),
                 new Claim(ClaimTypes.Role, userLogin.Role),
             };
@@ -84,7 +84,8 @@ namespace TaskManagementApi.Controllers
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddHours(1),
+                notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.AddHours(3),
                 signingCredentials: credentials);
 
             var accessToken = new JwtSecurityTokenHandler().WriteToken(token);

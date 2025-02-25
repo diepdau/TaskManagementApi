@@ -24,6 +24,7 @@ namespace TaskManagementApi.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetAllTaskLabels()
         {
             var taskLabels = _taskLabelRepository.GetAll();

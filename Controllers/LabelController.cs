@@ -8,7 +8,6 @@ namespace TaskManagementApi.Controllers
 {
     [Route("api/labels")]
     [ApiController]
-    [Authorize]
     public class LabelController : ControllerBase
     {
         private readonly LabelRepository _labelRepository;
@@ -18,6 +17,7 @@ namespace TaskManagementApi.Controllers
             _labelRepository = labelRepository;
         }
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetAllLabel() => Ok(_labelRepository.GetAll());
 
         [HttpPost]
