@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace TaskManagementApi.Controllers
 {
+    [Authorize]
     [Route("api/categories")]
     [ApiController]
-    [Authorize]
 
     public class CategoryController : ControllerBase
     {
@@ -35,6 +35,27 @@ namespace TaskManagementApi.Controllers
 
             _categoryRepository.Add(category);
             return CreatedAtAction(nameof(GetAllCategories), new { id = category.Id }, category);
+        }
+        [HttpGet("search")]
+        public IActionResult GetTasks(string? keyword, int page = 1, int pageSize = 3)
+        {
+            int totalItems;
+
+            var tasks = _categoryRepository.GetPaged(
+                filter: t => string.IsNullOrEmpty(keyword) || t.Name.Contains(keyword) || t.Description.Contains(keyword),
+                page: page,
+                pageSize: pageSize,
+                totalItems: out totalItems
+            );
+
+            return Ok(new
+            {
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                Data = tasks
+            });
         }
 
 

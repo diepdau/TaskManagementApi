@@ -40,6 +40,22 @@ namespace TaskManagementApi.Repositories
                 _context.SaveChanges();
             }
         }
+        public IEnumerable<T> GetPaged(Func<T, bool>? filter, int page, int pageSize, out int totalItems)
+        {
+            var query = _dbSet.AsQueryable();
+
+            if (filter != null)
+            {
+                query = query.Where(filter).AsQueryable();
+            }
+
+            totalItems = query.Count();
+
+            return query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
     }
 
 }

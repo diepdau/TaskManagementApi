@@ -24,7 +24,7 @@ namespace TaskManagementApi.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register(User user)
+        public async Task<IActionResult> Register(User user)
         {
             if (user == null)
                 return BadRequest("User information is required.");
@@ -76,7 +76,7 @@ namespace TaskManagementApi.Controllers
                 new Claim(ClaimTypes.Name, userLogin.Username),
                 new Claim(ClaimTypes.Email, userLogin.Email),
                 new Claim(ClaimTypes.Role, userLogin.Role),
-            };
+            };  
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -111,12 +111,19 @@ namespace TaskManagementApi.Controllers
             string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
             return Regex.IsMatch(email, pattern);
         }
-        public class UserRequest
-        {
-            public string Email { get; set; }
-            public string PasswordHash { get; set; }
-        }
 
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
+        {
+            var user = _userRepository.GetById(id);
+            if (user== null)
+            {
+                return NotFound(new { message = $"User with Id {id} does not exist." });
+            }
+
+            _userRepository.Delete(id);
+            return NoContent();
+        }
 
     }
 }

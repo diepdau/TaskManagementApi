@@ -27,7 +27,7 @@ namespace TaskManagementApi.Controllers
         [AllowAnonymous]
         public IActionResult GetAllTaskLabels()
         {
-            var taskLabels = _taskLabelRepository.GetAll();
+            var taskLabels =  _taskLabelRepository.GetAll();
             return Ok(taskLabels);
         }
 
@@ -35,7 +35,7 @@ namespace TaskManagementApi.Controllers
         [HttpPost]
         public IActionResult AddTaskLabel([FromBody] TaskLabel taskLabel)
         {
-            if (taskLabel?.TaskId <= 0 || taskLabel.LabelId <= 0)
+            if (taskLabel?.TaskId <= 0 || taskLabel?.LabelId <= 0)
                 return BadRequest("Invalid TaskId or LabelId.");
 
             if (_taskRepository.GetById(taskLabel.TaskId) == null)
@@ -51,8 +51,6 @@ namespace TaskManagementApi.Controllers
             return CreatedAtAction(nameof(AddTaskLabel), new { taskLabel.TaskId, taskLabel.LabelId }, taskLabel);
         }
 
-
-
         [HttpDelete("{taskId}/{labelId}")]
         public IActionResult RemoveLabel(int taskId, int labelId)
         {
@@ -62,7 +60,6 @@ namespace TaskManagementApi.Controllers
             }
             return NoContent();
         }
-
 
     }
 }

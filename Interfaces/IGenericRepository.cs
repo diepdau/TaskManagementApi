@@ -7,5 +7,6 @@
         void Add(T entity);
         void Update(T entity);
         void Delete(int id);
+        IEnumerable<T> GetPaged(Func<T, bool>? filter, int page, int pageSize, out int totalItems);
     }
 }
