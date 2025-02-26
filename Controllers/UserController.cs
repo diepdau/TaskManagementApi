@@ -85,7 +85,7 @@ namespace TaskManagementApi.Controllers
                 _configuration["Jwt:Audience"],
                 claims,
                 notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddHours(3),
+                expires: DateTime.UtcNow.AddSeconds(15),
                 signingCredentials: credentials);
 
             var accessToken = new JwtSecurityTokenHandler().WriteToken(token);

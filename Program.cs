@@ -19,7 +19,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
@@ -41,13 +41,13 @@ builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<TaskCommentRepository>();
 builder.Services.AddScoped<TaskLabelRepository>();
 builder.Services.AddScoped<LabelRepository>();
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
